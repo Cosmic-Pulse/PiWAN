@@ -31,7 +31,7 @@ Before you begin, ensure you have the following installed on your Raspberry Pi:
 1. Open a terminal on your Raspberry Pi.
 2. Clone the repository using Git:
    ```bash
-   git clone https://github.com/cosmic-pulse/lora-gateway-dashboard.git
+   git clone https://github.com/cosmic-pulse/PiWAN.git
    ```
 3. Navigate to the project directory:
    ```bash
