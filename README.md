@@ -55,7 +55,13 @@ Before you begin, ensure you have the following installed on your Raspberry Pi:
 
    Save and exit the file.
 
-3. Build and start the Docker containers:
+
+3. Set the proper permissions for Grafana:
+   ```bash
+   sudo chown -R 472:472 ./grafana
+   ```
+   
+4. Build and start the Docker containers:
    ```bash
    docker-compose up --build -d
    ```
