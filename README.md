@@ -79,3 +79,8 @@ Open your web browser and navigate to `http://<your-raspberry-pi-ip>:3000`.
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+
+## License
+
+This project is licensed under the MIT License.  
+For further details, please see the [LICENSE](./LICENSE) file.
