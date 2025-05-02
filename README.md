@@ -35,7 +35,7 @@ Before you begin, ensure you have the following installed on your Raspberry Pi:
    ```
 3. Navigate to the project directory:
    ```bash
-   cd lora-gateway-dashboard
+   cd PiWAN
    ```
 
 ### Configuring the Gateway
