@@ -1,1 +1,83 @@
-# lora-gateway-dashboard
+# LoRa Gateway Dashboard
+
+An all-in-one gateway solution for Raspberry Pi + LoRaWAN using BasicStation and Grafana.
+
+## Table of Contents
+
+- [Project Description](#project-description)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Cloning on a Raspberry Pi](#cloning-on-a-raspberry-pi)
+  - [Configuring the Gateway](#configuring-the-gateway)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Project Description
+
+This project provides a complete LoRaWAN gateway solution that runs on a Raspberry Pi. It includes configuration for BasicStation for LoRaWAN connectivity, integration with Telegraf via TTN MQTT, and Grafana for monitoring. The solution simplifies the deployment of LoRaWAN gateways on edge devices by packaging all necessary services together.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed on your Raspberry Pi:
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+## Installation
+
+### Cloning on a Raspberry Pi
+
+1. Open a terminal on your Raspberry Pi.
+2. Clone the repository using Git:
+   ```bash
+   git clone https://github.com/cosmic-pulse/lora-gateway-dashboard.git
+   ```
+3. Navigate to the project directory:
+   ```bash
+   cd lora-gateway-dashboard
+   ```
+
+### Configuring the Gateway
+
+1. Open the `gateway.conf` file in a text editor:
+   ```bash
+   nano gateway.conf
+   ```
+2. Replace the placeholder values with your actual configuration:
+   - `YOUR_INFLUXDB_USER`: Your InfluxDB username.
+   - `YOUR_INFLUXDB_PASSWORD`: Your InfluxDB password.
+   - `YOUR_TTN_APP_ID`: Your TTN application ID.
+   - `YOUR_TTN_API_KEY`: Your TTN API key.
+   - `YOUR_TTN_REGION`: Your TTN region (e.g., `nam1`).
+   - `YOUR_GATEWAY_EUI`: Your gateway's EUI.
+   - `YOUR_GATEWAY_API_KEY`: Your gateway's API key.
+
+   Save and exit the file.
+
+3. Build and start the Docker containers:
+   ```bash
+   docker-compose up --build -d
+   ```
+
+## Usage
+- To start the gateway, run:
+  ```bash
+  docker-compose up -d
+  ```
+- To stop the gateway, run:
+  ```bash
+    docker-compose down
+    ```
+- To view logs for the BasicStation container, run:
+  ```bash
+  docker-compose logs -f basicstation
+  ```
+Once the containers are running, the gateway will connect to the LoRaWAN network and start forwarding data. You can monitor the gateway's performance and metrics using Grafana.
+Open your web browser and navigate to `http://<your-raspberry-pi-ip>:3000`.
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+
+```

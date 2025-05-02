@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    env_file:
+      - ./gateway.conf
+    environment:
+      - INFLUXDB_DB=${INFLUXDB_DATABASE}
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USER}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+    volumes:
+      - ./influxdb:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./gateway.conf
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_SERVER_HTTP_ADDR=0.0.0.0
+    volumes:
+      - ./grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - influxdb
+    entrypoint: ["/bin/sh", "-c", "chown -R 472:472 /var/lib/grafana && /run.sh"]
+
+  telegraf:
+    image: telegraf:1.20
+    container_name: telegraf
+    depends_on:
+      - influxdb
+    env_file:
+      - ./gateway.conf
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc:/host/etc:ro
+
+  basicstation:
+    build:
+      context: ./basicstation
+      args:
+        BASICSTATION_COMMIT: ba4f85d
+    container_name: basicstation
+    devices:
+      - /dev/spidev0.0:/dev/spidev0.0
+    depends_on:
+      - influxdb
+    env_file:
+      - ./gateway.conf
+    restart: always
