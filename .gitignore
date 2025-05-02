@@ -1,2 +1,8 @@
 
 .DS_Store
+
+influxdb/
+
+grafana/*
+!grafana/provisioning/
+grafana/provisioning/.DS_Store
