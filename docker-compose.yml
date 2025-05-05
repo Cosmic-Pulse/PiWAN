@@ -2,29 +2,25 @@ version: '3.7'
 
 services:
   influxdb:
-    image: influxdb:1.8
+    image: influxdb:2.7.11
     container_name: influxdb
     ports:
       - "8086:8086"
     env_file:
       - ./gateway.conf
     environment:
-      - INFLUXDB_DB=${INFLUXDB_DATABASE}
-      - INFLUXDB_ADMIN_USER=${INFLUXDB_USER}
-      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_MODE=setup
     volumes:
-      - ./influxdb:/var/lib/influxdb
+      - .influxdb:/var/lib/influxdb2
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.6.1
     container_name: grafana
     ports:
       - "3000:3000"
     env_file:
       - ./gateway.conf
     environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
       - GF_SERVER_HTTP_ADDR=0.0.0.0
     volumes:
       - ./grafana:/var/lib/grafana
@@ -34,7 +30,7 @@ services:
     entrypoint: ["/bin/sh", "-c", "chown -R 472:472 /var/lib/grafana && /run.sh"]
 
   telegraf:
-    image: telegraf:1.20
+    image: telegraf:1.34.2
     container_name: telegraf
     depends_on:
       - influxdb

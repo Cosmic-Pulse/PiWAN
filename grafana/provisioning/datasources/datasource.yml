@@ -5,8 +5,11 @@ datasources:
     type: influxdb
     access: proxy
     url: http://influxdb:8086
-    database: ${INFLUXDB_DATABASE}
-    user: ${INFLUXDB_USER}
-    password: ${INFLUXDB_PASSWORD}
+    jsonData:
+      version: Flux
+      organization: ${DOCKER_INFLUXDB_INIT_ORG}
+      defaultBucket: ${DOCKER_INFLUXDB_INIT_BUCKET}
+    secureJsonData:
+      token: ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
     isDefault: true
     editable: true
