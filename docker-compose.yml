@@ -3,7 +3,7 @@ version: '3.7'
 services:
   influxdb:
     image: influxdb:2.7.11
-    container_name: influxdb
+    container_name: InfluxDB
     ports:
       - "8086:8086"
     env_file:
@@ -15,7 +15,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.6.1
-    container_name: grafana
+    container_name: Grafana
     ports:
       - "3000:3000"
     env_file:
@@ -31,9 +31,10 @@ services:
 
   telegraf:
     image: telegraf:1.34.2
-    container_name: telegraf
+    container_name: Telegraf
     depends_on:
       - influxdb
+    user: "999:0"
     env_file:
       - ./gateway.conf
     volumes:
@@ -48,7 +49,8 @@ services:
       context: ./basicstation
       args:
         BASICSTATION_COMMIT: ba4f85d
-    container_name: basicstation
+    image: basicstation:2.0.6
+    container_name: BasicStation
     devices:
       - /dev/spidev0.0:/dev/spidev0.0
     depends_on:
