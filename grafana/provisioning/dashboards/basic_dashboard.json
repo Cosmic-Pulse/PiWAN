@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -800,10 +800,7 @@
   "preload": false,
   "refresh": "5s",
   "schemaVersion": 41,
-  "tags": [
-    "system",
-    "health"
-  ],
+  "tags": [],
   "templating": {
     "list": []
   },
