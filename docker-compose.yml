@@ -15,6 +15,7 @@ services:
 
   grafana:
     image: grafana/grafana:11.6.1
+    user: "0"
     container_name: Grafana
     ports:
       - "3000:3000"
