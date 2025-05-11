@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 3,
   "links": [],
   "panels": [
     {
@@ -342,13 +342,14 @@
                 "color": "green"
               }
             ]
-          }
+          },
+          "unit": "dtdhms"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 2,
+        "h": 8,
+        "w": 8,
         "x": 0,
         "y": 16
       },
@@ -373,11 +374,11 @@
       "pluginVersion": "11.6.1",
       "targets": [
         {
-          "query": "from(bucket: \"piwan\")\n  |> range(start: -5m)\n  |> filter(fn: (r) =>\n    r._measurement == \"system\" and\n    r._field == \"uptime\"\n  )\n  |> last()\n  |> map(fn: (r) => ({\n    _time: r._time,\n    uptime_hours: float(v: r._value) / 3600.0\n  }))",
+          "query": "from(bucket: \"piwan\")\n  |> range(start: -5m)\n  |> filter(fn: (r) =>\n    r._measurement == \"system\" and\n    r._field == \"uptime\"\n  )\n  |> last()\n  |> map(fn: (r) => ({\n    _time: r._time,\n    uptime_hours: float(v: r._value)\n  }))",
           "refId": "A"
         }
       ],
-      "title": "RPi Uptime (hours)",
+      "title": "RPi Uptime",
       "type": "stat"
     },
     {
@@ -400,14 +401,15 @@
                 "color": "green"
               }
             ]
-          }
+          },
+          "unit": "dtdhms"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 9,
-        "x": 2,
+        "h": 8,
+        "w": 8,
+        "x": 8,
         "y": 16
       },
       "id": 11,
@@ -425,17 +427,18 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {},
         "textMode": "auto",
         "wideLayout": true
       },
       "pluginVersion": "11.6.1",
       "targets": [
         {
-          "query": "from(bucket: \"piwan\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._field == \"uptime_ns\" \n  )\n  |> map(fn: (r) => ({\n      r with\n      _value: float(v: r._value) / 1000000000.0 / 3600.0\n  }))\n  |> group(columns: [\"container_name\"])\n  |> keep(columns: [\"_time\", \"_value\", \"container_name\"])\n  |> yield(name: \"Uptime (hrs)\")",
+          "query": "from(bucket: \"piwan\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._field == \"uptime_ns\" \n  )\n  |> map(fn: (r) => ({\n      r with\n      _value: float(v: r._value) / 1000000000.0\n  }))\n  |> group(columns: [\"container_name\"])\n  |> keep(columns: [\"_time\", \"_value\", \"container_name\"])\n  |> yield(name: \"Uptime (hrs)\")",
           "refId": "A"
         }
       ],
-      "title": "Container uptime (hours)",
+      "title": "Container uptime",
       "type": "stat"
     },
     {
@@ -462,9 +465,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 10,
-        "x": 11,
+        "h": 8,
+        "w": 8,
+        "x": 16,
         "y": 16
       },
       "id": 14,
@@ -503,6 +506,133 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "CPU",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [
+            {
+              "options": {
+                "{{cpu}}": {
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 0,
+        "y": 24
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            }
+          ],
+          "measurement": "cpu",
+          "query": "from(bucket: \"piwan\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpu\" and\n    r._field == \"usage_idle\" and\n    r.cpu != \"cpu-total\"\n  )\n  |> map(fn: (r) => ({\n    r with\n    _value: 100.0 - r._value,\n    _field: \"\"\n  }))\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> drop(columns: [\"host\"])\n  |> yield(name: \"CPU Usage\")",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "usage_user"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ]
+        }
+      ],
+      "title": "CPU Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "thresholds"
           },
           "mappings": [],
@@ -524,10 +654,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 4,
-        "x": 0,
-        "y": 20
+        "x": 16,
+        "y": 24
       },
       "id": 3,
       "options": {
@@ -611,10 +741,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 4,
-        "x": 4,
-        "y": 20
+        "x": 20,
+        "y": 24
       },
       "id": 2,
       "options": {
@@ -668,133 +798,6 @@
       ],
       "title": "Memory Usage",
       "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "CPU",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [
-            {
-              "options": {
-                "{{cpu}}": {
-                  "index": 0
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 16,
-        "x": 8,
-        "y": 20
-      },
-      "id": 1,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.6.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            }
-          ],
-          "measurement": "cpu",
-          "query": "from(bucket: \"piwan\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._measurement == \"cpu\" and\n    r._field == \"usage_idle\" and\n    r.cpu != \"cpu-total\"\n  )\n  |> map(fn: (r) => ({\n    r with\n    _value: 100.0 - r._value,\n    _field: \"\"\n  }))\n  |> aggregateWindow(every: 1m, fn: mean)\n  |> drop(columns: [\"host\"])\n  |> yield(name: \"CPU Usage\")",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "usage_user"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "mean"
-              }
-            ]
-          ]
-        }
-      ],
-      "title": "CPU Usage",
-      "type": "timeseries"
     }
   ],
   "preload": false,
