@@ -434,7 +434,7 @@
       "pluginVersion": "11.6.1",
       "targets": [
         {
-          "query": "from(bucket: \"piwan\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._field == \"uptime_ns\" \n  )\n  |> map(fn: (r) => ({\n      r with\n      _value: float(v: r._value) / 1000000000.0\n  }))\n  |> group(columns: [\"container_name\"])\n  |> keep(columns: [\"_time\", \"_value\", \"container_name\"])\n  |> yield(name: \"Uptime (hrs)\")",
+          "query": "from(bucket: \"piwan\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) =>\n    r._field == \"uptime_ns\" \n  )\n  |> group(columns: [\"container_name\"])\n  |> last()\n  |> map(fn: (r) => ({\n      r with\n      _value: float(v: r._value) / 1000000000.0\n  }))\n  |> keep(columns: [\"_time\", \"_value\", \"container_name\"])\n  |> yield(name: \"Uptime (hrs)\")",
           "refId": "A"
         }
       ],
@@ -811,5 +811,5 @@
   "timezone": "browser",
   "title": "Basic Dashboard",
   "uid": "gateway-health",
-  "version": 1
+  "version": 3
 }

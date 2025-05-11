@@ -1,4 +1,4 @@
-# LoRa Gateway Dashboard
+# PiWAN - LoRa Gateway Stack
 
 An all-in-one gateway solution for Raspberry Pi + LoRaWAN using BasicStation and Grafana.
 
