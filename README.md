@@ -1,5 +1,14 @@
 # PiWAN - LoRa Gateway Stack
 
+![Dashboard](assets/dashboard.png)
+
+![GitHub Repo stars](https://img.shields.io/github/stars/cosmic-pulse/PiWAN?style=social)
+![GitHub forks](https://img.shields.io/github/forks/cosmic-pulse/PiWAN?style=social)
+![GitHub issues](https://img.shields.io/github/issues/cosmic-pulse/PiWAN)
+![GitHub contributors](https://img.shields.io/github/contributors/cosmic-pulse/PiWAN)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
+
 An all-in-one gateway solution for Raspberry Pi + LoRaWAN using BasicStation and Grafana.
 
 ## Table of Contents
