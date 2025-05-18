@@ -6,7 +6,7 @@ echo "Generating station.conf..."
 sed -i "s/\${GATEWAY_EUI}/${GATEWAY_EUI}/g" /etc/basicstation/station.conf
 
 echo "Generating tc.uri..."
-echo "${GATEWAY_SERVER}" > /etc/basicstation/tc.uri
+echo "wss://${TTN_REGION}.${GATEWAY_SERVER}:8887" > /etc/basicstation/tc.uri
 
 echo "Generating tc.key..."
 echo "Authorization: Bearer ${GATEWAY_API_KEY}" | perl -p -e 's/\r\n|\n|\r/\r\n/g' >> /etc/basicstation/tc.key

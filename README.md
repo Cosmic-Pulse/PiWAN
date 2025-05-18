@@ -1,4 +1,13 @@
-# LoRa Gateway Dashboard
+# PiWAN - LoRa Gateway Stack
+
+![Dashboard](assets/dashboard.png)
+
+![GitHub Repo stars](https://img.shields.io/github/stars/cosmic-pulse/PiWAN?style=social)
+![GitHub forks](https://img.shields.io/github/forks/cosmic-pulse/PiWAN?style=social)
+![GitHub issues](https://img.shields.io/github/issues/cosmic-pulse/PiWAN)
+![GitHub contributors](https://img.shields.io/github/contributors/cosmic-pulse/PiWAN)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 
 An all-in-one gateway solution for Raspberry Pi + LoRaWAN using BasicStation and Grafana.
 
@@ -40,13 +49,16 @@ Before you begin, ensure you have the following installed on your Raspberry Pi:
 
 ### Configuring the Gateway
 
-1. Open the `gateway.conf` file in a text editor:
+1. Rename the `gatewaySAMPLE.conf` to `gateway.conf`.
+2. Open the `gateway.conf` file in a text editor:
    ```bash
    nano gateway.conf
    ```
-2. Replace the placeholder values with your actual configuration:
+3. Replace the placeholder values with your actual configuration:
    - `YOUR_INFLUXDB_USER`: Your InfluxDB username.
    - `YOUR_INFLUXDB_PASSWORD`: Your InfluxDB password.
+   - `YOUR_ORGANIZATION_NAME`: Your InfluxDB organization name.
+   - `CHOOSE_A_TOKEN`: Generate an InfluxDB admin token.
    - `YOUR_TTN_APP_ID`: Your TTN application ID.
    - `YOUR_TTN_API_KEY`: Your TTN API key.
    - `YOUR_TTN_REGION`: Your TTN region (e.g., `nam1`).
@@ -55,13 +67,18 @@ Before you begin, ensure you have the following installed on your Raspberry Pi:
 
    Save and exit the file.
 
-
-3. Set the proper permissions for Grafana:
+4. Find the docker group of your RPi/host:
    ```bash
-   sudo chown -R 472:472 ./grafana
+   getent group docker
    ```
    
-4. Build and start the Docker containers:
+5. Modify the `docker-compose.yml` file to set the correct group ID for the `Telegraf` service. Replace `999:0` with the actual group ID you found in the previous step:
+   ```yaml
+   telegraf:
+     container_name: Telegraf
+     user: "999:<your_group_id>"
+   ```
+6. Build and start the Docker containers:
    ```bash
    docker-compose up --build -d
    ```
@@ -81,6 +98,15 @@ Before you begin, ensure you have the following installed on your Raspberry Pi:
   ```
 Once the containers are running, the gateway will connect to the LoRaWAN network and start forwarding data. You can monitor the gateway's performance and metrics using Grafana.
 Open your web browser and navigate to `http://<your-raspberry-pi-ip>:3000`.
+
+
+## Troubleshooting & Common Issues
+ ### 1. Grafana complains about folder access permissions:
+Set the folder permissions for Grafana before starting the containers:
+```bash
+cd PiWAN
+sudo chown -R 472:472 ./grafana
+```
 
 ## Contributing
 
