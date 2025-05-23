@@ -16,4 +16,4 @@ cp /etc/ssl/certs/ca-certificates.crt /etc/basicstation/tc.trust
 
 echo "Starting BasicStation..."
 cd /etc/basicstation
-exec /usr/local/bin/station
+exec /usr/local/bin/station -f

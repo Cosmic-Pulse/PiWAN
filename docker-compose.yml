@@ -53,6 +53,7 @@ services:
     image: basicstation:2.0.6
     container_name: BasicStation
     devices:
+      - /dev/gpiochip0:/dev/gpiochip0
       - /dev/spidev0.0:/dev/spidev0.0
     depends_on:
       - influxdb
