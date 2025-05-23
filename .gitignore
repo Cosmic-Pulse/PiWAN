@@ -7,3 +7,5 @@ grafana/*
 !grafana/provisioning/
 grafana/provisioning/.DS_Store
 .influxdb/
+
+gateway.conf
