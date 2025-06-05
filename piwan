@@ -1,0 +1,66 @@
+#!/bin/bash
+set -e
+
+# Determine project root directory (where this script resides)
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$PROJECT_DIR"
+SERVICE_NAME=piwan
+SYSTEMD_SERVICE_FILE=/etc/systemd/system/${SERVICE_NAME}.service
+
+install_service() {
+  echo "[Unit]"
+  echo "Description=PiWAN Service"
+  echo "After=network.target docker.service"
+  echo "[Service]"
+  echo "Type=oneshot"
+  echo "RemainAfterExit=yes"
+  echo "WorkingDirectory=$PROJECT_DIR"
+  echo "ExecStart=/usr/local/bin/piwan up"
+  echo "ExecStop=/usr/local/bin/piwan down"
+  echo "[Install]"
+  echo "WantedBy=multi-user.target"
+}
+
+case "$1" in
+  build)
+    # Extract BASICSTATION_PLATFORM from gateway.conf
+    PLATFORM=$(grep BASICSTATION_PLATFORM gateway.conf | cut -d= -f2 | tr -d ' ')
+    PLATFORM=${PLATFORM:-rpi}
+    echo "Building for platform: $PLATFORM"
+    docker compose build --build-arg BASICSTATION_PLATFORM="$PLATFORM" basicstation
+    ;;
+  up)
+    docker compose up -d
+    ;;
+  down)
+    docker compose down
+    ;;
+  logs)
+    if [ -n "$2" ]; then
+      docker logs --tail 50 -f "$2"
+    else
+      docker compose logs -f
+    fi
+    ;;
+  install)
+    echo "Building containers..."
+    "$0" build
+    echo "Writing wrapper to /usr/local/bin/piwan..."
+    sudo tee /usr/local/bin/piwan > /dev/null <<EOF
+#!/bin/bash
+cd "$PROJECT_DIR"
+exec "$PROJECT_DIR/$(basename "$0")" "\$@"
+EOF
+    sudo chmod +x /usr/local/bin/piwan
+    echo "Setting up systemd service..."
+    install_service | sudo tee "$SYSTEMD_SERVICE_FILE" > /dev/null
+    sudo systemctl daemon-reload
+    sudo systemctl enable "$SERVICE_NAME"
+    sudo systemctl start "$SERVICE_NAME"
+    echo "Piwan installed and enabled to start on boot."
+    ;;
+  *)
+    echo "Usage: $0 {build|up|down|logs [service]|install}"
+    exit 1
+    ;;
+esac
