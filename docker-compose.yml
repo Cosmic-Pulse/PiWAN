@@ -23,6 +23,8 @@ services:
       - ./gateway.conf
     environment:
       - GF_SERVER_HTTP_ADDR=0.0.0.0
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
     volumes:
       - ./grafana:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
@@ -50,11 +52,13 @@ services:
       context: ./basicstation
       args:
         BASICSTATION_COMMIT: ba4f85d
+        BASICSTATION_PLATFORM: ${BASICSTATION_PLATFORM:-rpi}
     image: basicstation:2.0.6
     container_name: BasicStation
     devices:
       - /dev/gpiochip0:/dev/gpiochip0
       - /dev/spidev0.0:/dev/spidev0.0
+      - /dev/i2c-1:/dev/i2c-1
     depends_on:
       - influxdb
     env_file:
