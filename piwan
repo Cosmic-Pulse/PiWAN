@@ -7,6 +7,13 @@ cd "$PROJECT_DIR"
 SERVICE_NAME=piwan
 SYSTEMD_SERVICE_FILE=/etc/systemd/system/${SERVICE_NAME}.service
 
+# Compose reads these for ${...} in docker-compose.yml; env_file values don't count there.
+# gateway.conf lines can carry a trailing comment, so strip it.
+BASICSTATION_PLATFORM=$(grep -E '^BASICSTATION_PLATFORM=' gateway.conf | cut -d= -f2 | sed 's/#.*//' | tr -d ' ' || true)
+export BASICSTATION_PLATFORM=${BASICSTATION_PLATFORM:-rpi}
+DOCKER_GID=$(getent group docker | cut -d: -f3)
+export DOCKER_GID=${DOCKER_GID:-0}
+
 install_service() {
   echo "[Unit]"
   echo "Description=PiWAN Service"
@@ -23,11 +30,8 @@ install_service() {
 
 case "$1" in
   build)
-    # Extract BASICSTATION_PLATFORM from gateway.conf
-    PLATFORM=$(grep BASICSTATION_PLATFORM gateway.conf | cut -d= -f2 | tr -d ' ')
-    PLATFORM=${PLATFORM:-rpi}
-    echo "Building for platform: $PLATFORM"
-    docker compose build --build-arg BASICSTATION_PLATFORM="$PLATFORM" basicstation
+    echo "Building for platform: $BASICSTATION_PLATFORM"
+    docker compose build basicstation
     ;;
   up)
     docker compose up -d

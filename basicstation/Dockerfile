@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim AS builder
+FROM debian:bookworm-slim AS builder
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -20,7 +20,7 @@ ARG BASICSTATION_PLATFORM=rpi
 RUN make platform=${BASICSTATION_PLATFORM} variant=std ARCH=aarch64-linux-gnu deps s-clean s-all
 
 # Now create a lightweight final image
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y ca-certificates gpiod
 
@@ -38,6 +38,6 @@ COPY --from=builder /build/basicstation/build-${BASICSTATION_PLATFORM}-std/bin/s
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY gw_reset.sh /usr/local/bin/gw_reset.sh
 
-RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh /usr/local/bin/gw_reset.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

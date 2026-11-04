@@ -37,7 +37,7 @@ services:
     container_name: Telegraf
     depends_on:
       - influxdb
-    user: "999:0"
+    user: "999:${DOCKER_GID:-0}"
     env_file:
       - ./gateway.conf
     volumes:

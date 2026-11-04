@@ -5,11 +5,18 @@ cp /usr/local/bin/station.conf /etc/basicstation/station.conf
 echo "Generating station.conf..."
 sed -i "s/\${GATEWAY_EUI}/${GATEWAY_EUI}/g" /etc/basicstation/station.conf
 
+# Listen-only unless GATEWAY_RX_ONLY=false: the radio HAL refuses any transmit on a chain
+# with tx_enable false, so a downlink from the network server cannot go on air.
+if [ "${GATEWAY_RX_ONLY:-true}" != "false" ]; then
+    echo "Listen-only mode: transmit disabled"
+    sed -i 's/"tx_enable": true/"tx_enable": false/' /etc/basicstation/station.conf
+fi
+
 echo "Generating tc.uri..."
 echo "wss://${TTN_REGION}.${GATEWAY_SERVER}:8887" > /etc/basicstation/tc.uri
 
 echo "Generating tc.key..."
-echo "Authorization: Bearer ${GATEWAY_API_KEY}" | perl -p -e 's/\r\n|\n|\r/\r\n/g' >> /etc/basicstation/tc.key
+echo "Authorization: Bearer ${GATEWAY_API_KEY}" | perl -p -e 's/\r\n|\n|\r/\r\n/g' > /etc/basicstation/tc.key
 
 echo "Generating tc.trust..."
 cp /etc/ssl/certs/ca-certificates.crt /etc/basicstation/tc.trust
