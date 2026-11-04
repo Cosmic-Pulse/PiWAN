@@ -11,7 +11,7 @@ services:
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
     volumes:
-      - .influxdb:/var/lib/influxdb2
+      - influxdb_data:/var/lib/influxdb2
 
   grafana:
     image: grafana/grafana:11.6.1
@@ -26,7 +26,7 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
     volumes:
-      - ./grafana:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - influxdb
@@ -64,3 +64,13 @@ services:
     env_file:
       - ./gateway.conf
     restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  grafana_data:
+  influxdb_data:
+
